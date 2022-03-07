@@ -1,4 +1,4 @@
-RegisterCommand('propfix', function()
+RegisterCommand('fixprop', function()
     for k, v in pairs(GetGamePool('CObject')) do
         if IsEntityAttachedToEntity(PlayerPedId(), v) then
             SetEntityAsMissionEntity(v, true, true)
