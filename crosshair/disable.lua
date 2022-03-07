@@ -1,39 +1,33 @@
-local whitelistedweapon = {'WEAPON_SNIPERRIFLE', 'WEAPON_HEAVYSNIPER', 'WEAPON_MARKSMANRIFLE', 'WEAPON_HEAVYSNIPER_MK2'}
-local meleeweapon = {'WEAPON_UNARMED', 'WEAPON_DAGGER', 'WEAPON_BAT', 'WEAPON_BOTTLE', 'WEAPON_CROWBAR', 'WEAPON_FLASHLIGHT', 'WEAPON_HAMMER', 'WEAPON_HATCHET', 'WEAPON_KNUCKLE', 'WEAPON_KNIFE', 'WEAPON_MACHETE', 'WEAPON_SWITCHBLADE', 'WEAPON_NIGHTSTICK', 'WEAPON_WRENCH', 'WEAPON_BATTLEAXE', 'WEAPON_POOLCUE', 'WEAPON_STONE_HATCHET'}
+local scopedWeapons = 
+{
+    100416529,  -- WEAPON_SNIPERRIFLE
+    205991906,  -- WEAPON_HEAVYSNIPER
+    3342088282, -- WEAPON_MARKSMANRIFLE
+	177293209,   -- WEAPON_HEAVYSNIPER MKII
+	1785463520  -- WEAPON_MARKSMANRIFLE_MK2
+}
 
+function HashInTable( hash )
+    for k, v in pairs( scopedWeapons ) do 
+        if ( hash == v ) then 
+            return true 
+        end 
+    end 
+
+    return false 
+end 
+
+function ManageReticle()
+    local ped = PlayerPedId()
+    local _, hash = GetCurrentPedWeapon(ped,true)
+    if not HashInTable(hash) then 
+        HideHudComponentThisFrame(14)
+    end 
+end 
 
 Citizen.CreateThread(function()
     while true do
-        local playerped = PlayerPedId()
-        local pedweapon = GetSelectedPedWeapon(playerped)
-        
-        if not  isweaponwhitelisted(pedweapon) then
-            if not ismeleeweapon(pedweapon) then
-                HideHudComponentThisFrame(14) -- Reticule
-            else
-                Wait(100)
-            end
-        else
-            Wait(100)
-        end
-        Wait(1)
+        Wait(3)
+        ManageReticle()
     end
 end)
-
-function isweaponwhitelisted(currentweapon)
-    for k,v in pairs(whitelistedweapon) do
-        if GetHashKey(v) == currentweapon then
-            return true
-        end
-    end
-    return false
-end
-
-function ismeleeweapon(currentweapon)
-    for k,v in pairs(meleeweapon) do
-        if GetHashKey(v) == currentweapon then
-            return true
-        end
-    end
-    return false
-end
