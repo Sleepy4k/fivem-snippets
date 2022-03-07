@@ -1,10 +1,9 @@
-- Player PED
-Ganti semua GetPlayerPed(-1) dengan PlayerPedId()
+--// Player PED //--
+GetPlayerPed(-1) = PlayerPedId()
 
-- Distance
+--// Distance //--
 local playercoords = GetEntityCoords(PlayerPedId())
 local vehiclecoords = GetEntityCoords(vehicle)
--- Dari ini
-if GetDistanceBetweenCoords(playercoords.x, playercoords.y, playercoords.z, vehiclecoords.x, vehiclecoords.y, vehiclecoords.z, true) < 5 then 
--- Ganti ke
-if #(playercoords - vehiclecoords) < 5 then
+
+--// Coords //--
+if GetDistanceBetweenCoords(playercoords.x, playercoords.y, playercoords.z, vehiclecoords.x, vehiclecoords.y, vehiclecoords.z, true) < 5 then = if #(playercoords - vehiclecoords) < 5 then
