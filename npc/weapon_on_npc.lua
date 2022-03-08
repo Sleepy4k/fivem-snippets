@@ -1,3 +1,4 @@
+function SetWeaponDrops()
 	local handle, ped = FindFirstPed()
 	local finished = false
 
