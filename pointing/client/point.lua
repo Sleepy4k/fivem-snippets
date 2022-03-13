@@ -1,6 +1,6 @@
-local sedangNunjuk = false
+local mp_pointing = false
 
-function startPointing()
+local function startPointing()
     local ped = PlayerPedId()
     RequestAnimDict("anim@mp_point")
     while not HasAnimDictLoaded("anim@mp_point") do
@@ -8,13 +8,13 @@ function startPointing()
     end
     SetPedCurrentWeaponVisible(ped, 0, 1, 1, 1)
     SetPedConfigFlag(ped, 36, 1)
-    Citizen.InvokeNative(0x2D537BA194896636, ped, "task_mp_pointing", 0.5, 0, "anim@mp_point", 24)
+	TaskMoveNetworkByName(ped, 'task_mp_pointing', 0.5, false, 'anim@mp_point', 24)
     RemoveAnimDict("anim@mp_point")
 end
 
-function stopPointing()
+local function stopPointing()
     local ped = PlayerPedId()
-    Citizen.InvokeNative(0xD01015C7316AE176, ped, "Stop")
+	RequestTaskMoveNetworkStateTransition(ped, 'Stop')
     if not IsPedInjured(ped) then
         ClearPedSecondaryTask(ped)
     end
@@ -25,44 +25,18 @@ function stopPointing()
     ClearPedSecondaryTask(PlayerPedId())
 end
 
-RegisterCommand('nunjuk', function()
-    if not sedangNunjuk then
-        keyPressed = true
-        startPointing()
-        
-        mp_pointing = true
-    else
-        keyPressed = true
-        mp_pointing = false
-        stopPointing()
-    end
-    sedangNunjuk = not sedangNunjuk
-end)
-
-RegisterKeyMapping('nunjuk', 'Hotkey untuk Menunjuk', 'keyboard', 'B')
-
-local once = true
-local oldval = false
-local oldvalped = false
-
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
-        local tidur = false
-
-        if once then
-            once = false
-        end
-
-        if Citizen.InvokeNative(0x921CE12C489C4C41, PlayerPedId()) and not mp_pointing then
-            stopPointing()
-        end
-        if Citizen.InvokeNative(0x921CE12C489C4C41, PlayerPedId()) then
-            if not IsPedOnFoot(PlayerPedId()) then
+if Config.EnablePoint == true then
+    RegisterCommand(Config.PointCommand, function()
+        if not IsPedInAnyVehicle(PlayerPedId(), false) and not IsPedArmed(GetPlayerPed(-1), 7) then
+            if mp_pointing then
                 stopPointing()
+                mp_pointing = false
             else
-                tidur = true
-                local ped = GetPlayerPed(-1)
+                startPointing()
+                mp_pointing = true
+            end
+            while mp_pointing do
+                local ped = PlayerPedId()
                 local camPitch = GetGameplayCamRelativePitch()
                 if camPitch < -70.0 then
                     camPitch = -70.0
@@ -70,7 +44,7 @@ Citizen.CreateThread(function()
                     camPitch = 42.0
                 end
                 camPitch = (camPitch + 70.0) / 112.0
-
+    
                 local camHeading = GetGameplayCamRelativeHeading()
                 local cosCamHeading = Cos(camHeading)
                 local sinCamHeading = Sin(camHeading)
@@ -80,24 +54,19 @@ Citizen.CreateThread(function()
                     camHeading = 180.0
                 end
                 camHeading = (camHeading + 180.0) / 360.0
-
+    
                 local blocked = 0
                 local nn = 0
-
+    
                 local coords = GetOffsetFromEntityInWorldCoords(ped, (cosCamHeading * -0.2) - (sinCamHeading * (0.4 * camHeading + 0.3)), (sinCamHeading * -0.2) + (cosCamHeading * (0.4 * camHeading + 0.3)), 0.6)
                 local ray = Cast_3dRayPointToPoint(coords.x, coords.y, coords.z - 0.2, coords.x, coords.y, coords.z + 0.2, 0.4, 95, ped, 7);
-                nn,blocked,coords,coords = GetRaycastResult(ray)
-
-                Citizen.InvokeNative(0xD5BB4025AE449A4E, ped, "Pitch", camPitch)
-                Citizen.InvokeNative(0xD5BB4025AE449A4E, ped, "Heading", camHeading * -1.0 + 1.0)
-                Citizen.InvokeNative(0xB0A6CFD2C69C1088, ped, "isBlocked", blocked)
-                Citizen.InvokeNative(0xB0A6CFD2C69C1088, ped, "isFirstPerson", Citizen.InvokeNative(0xEE778F8C7E1142E2, Citizen.InvokeNative(0x19CAFA3C87F7C2FF)) == 4)
-
+                nn,blocked,coords,coords = GetRaycastResult(ray)	
+                SetTaskMoveNetworkSignalFloat(ped, "Pitch", camPitch)
+                SetTaskMoveNetworkSignalFloat(ped, "Heading", camHeading * -1.0 + 1.0)
+                SetTaskMoveNetworkSignalBool(ped, "isBlocked", blocked)
+                SetTaskMoveNetworkSignalBool(ped, "isFirstPerson", GetCamViewModeForContext(GetCamActiveViewModeContext()) == 4)
+                Wait(1)
             end
         end
-
-        if not tidur then
-            Citizen.Wait(500)
-        end
-    end
-end)
+    end)
+end
