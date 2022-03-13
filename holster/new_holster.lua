@@ -243,7 +243,6 @@ function loadAnimDict(dict)
 	end
 end
 
-
 function grab2h()
 	local dict = "reaction@intimidation@cop@unarmed"
 	local anim = "intro"

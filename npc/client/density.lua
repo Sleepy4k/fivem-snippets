@@ -5,7 +5,6 @@ if Config.EnableDensity == true then
     CreateThread(function()
         while true do
             local p = PlayerPedId()
-            local pV = GetVehiclePedIsUsing(p)
 
             SetParkedVehicleDensityMultiplierThisFrame(density)
             SetVehicleDensityMultiplierThisFrame(density)
@@ -17,10 +16,6 @@ if Config.EnableDensity == true then
             ClearAreaOfVehicles(x, y, z, 1000, false, false, false, false, false)
             RemoveVehiclesFromGeneratorsInArea(x - 800.0, y - 800.0, z - 800.0, x + 800.0, y + 800.0, z + 800.0);
             
-            if pV ~= 0 and Config.DisableBikeHelmet == true then 
-                SetPedConfigFlag(p, 35, false) 
-            end
-    
             Wait(interval)
         end
     end)
