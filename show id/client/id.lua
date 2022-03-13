@@ -1,15 +1,18 @@
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
-        if    (IsControlPressed(0, 303)) then
-            local nearbyPlayers = GetNeareastPlayers()
-            for k, v in pairs(nearbyPlayers) do
-                local x, y, z = table.unpack(v.coords)
-                DrawText3D2(x, y, z + 1.03, v.playerId .. '') 
+local ahahah = Config.Interval
+if Config.EnableShowId == true then
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(ahahah)
+            if (IsControlPressed(0, 303)) then
+                local nearbyPlayers = GetNeareastPlayers()
+                for k, v in pairs(nearbyPlayers) do
+                    local x, y, z = table.unpack(v.coords)
+                    DrawText3D2(x, y, z + 1.03, v.playerId .. '') 
+                end
             end
         end
-    end
-end)
+    end)
+end
 
 function GetNeareastPlayers()
     local players = {}
