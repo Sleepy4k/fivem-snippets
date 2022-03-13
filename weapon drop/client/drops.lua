@@ -12,9 +12,12 @@ function SetWeaponDrops()
 	EndFindPed(handle)
 end
 
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(1000)
-		SetWeaponDrops()
-	end
-end)
+local yank = Config.Interval
+if Config.DisableWeaponDrop == true then
+	Citizen.CreateThread(function()
+		while true do
+			Citizen.Wait(yank)
+			SetWeaponDrops()
+		end
+	end)
+end
