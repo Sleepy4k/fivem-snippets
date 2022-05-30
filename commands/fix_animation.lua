@@ -1,12 +1,20 @@
+--// don't touch this please \\--
+local ispedragdoll = IsPedRagdoll
+local isentityinair = IsEntityInAir
+local ispedinanyvehicle = IsPedInAnyVehicle
+local clearpedsecondarytask = ClearPedSecondaryTask
+local clearpedtasksimmediately = ClearPedTasksImmediately
+local setpedcanplaygestureanims = SetPedCanPlayGestureAnims
+
 RegisterCommand('fixanim', function(source, args, RawCommand)
     local ped = PlayerPedId()
 
-    if not IsEntityInAir(ped) then
-        if not IsPedRagdoll(ped) then
-            if not IsPedInAnyVehicle(ped) then
-                ClearPedTasksImmediately(ped)
-                ClearPedSecondaryTask(ped)
-                SetPedCanPlayGestureAnims(ped, true)
+    if not isentityinair(ped) then
+        if not ispedragdoll(ped) then
+            if not ispedinanyvehicle(ped) then
+                clearpedtasksimmediately(ped)
+                clearpedsecondarytask(ped)
+                setpedcanplaygestureanims(ped, true)
             else
                 --// notif player when trying fix animation while ped in vehicle \\--
                 --// notif player ketika mencoba membenarkan animasi ketika di dalam kendaraan \\--
