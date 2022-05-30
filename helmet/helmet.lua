@@ -1,14 +1,19 @@
+--// don't touch this please \\--
+local setpedconfigflag = SetPedConfigFlag
+local ispedinanyvehicle = IsPedInAnyVehicle
+local getvehiclepedisusing = GetVehiclePedIsUsing
+
 CreateThread(function()
     while true do
         local msec = 500
         local ped = PlayerPedId()
 
-        if IsPedInAnyVehicle(ped, false) then
+        if ispedinanyvehicle(ped, false) then
             msec = 0
-            local get_vehicle = GetVehiclePedIsUsing(ped)
+            local get_vehicle = getvehiclepedisusing(ped)
 
             if get_vehicle ~= 0 then 
-                SetPedConfigFlag(ped, 35, false) 
+                setpedconfigflag(ped, 35, false) 
             end
         end
         
