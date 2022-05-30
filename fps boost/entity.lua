@@ -1,4 +1,6 @@
-function OptimizeFPS()
+local function OptimizeFPS()
+    local ped = PlayerPedId()
+
     ClearAllBrokenGlass()
     ClearAllHelpMessages()
     LeaderboardsReadClearAll()
@@ -10,15 +12,18 @@ function OptimizeFPS()
     LeaderboardsClearCacheData()
     ClearFocus()
     ClearHdArea()
-    ClearPedBloodDamage(PlayerPedId())
-    ClearPedWetness(PlayerPedId())
-    ClearPedEnvDirt(PlayerPedId())
-    ResetPedVisibleDamage(PlayerPedId())
+    ClearPedBloodDamage(ped)
+    ClearPedWetness(ped)
+    ClearPedEnvDirt(ped)
+    ResetPedVisibleDamage(ped)
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
-        Citizen.Wait(60000)
+        local msec = 60000
+
         OptimizeFPS()
+
+        Wait(msec)
     end
 end)
