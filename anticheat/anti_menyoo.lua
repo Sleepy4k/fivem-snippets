@@ -18,8 +18,8 @@ local filesReady = {
 }
 
 --// don't touch this please \\--
-local hasstreamedtexturedictloaded = HasStreamedTextureDictLoaded
 local isstreamingfileready = IsStreamingFileReady
+local hasstreamedtexturedictloaded = HasStreamedTextureDictLoaded
 
 CreateThread(function()
 	while true do
