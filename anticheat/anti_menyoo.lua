@@ -1,43 +1,54 @@
+local enable_anti_menyoo = true
+
 local dictTextures = {
-  "MenyooExtras",
-  "rampage_tr_main",
-  "rampage_tr_animated",
-  "heisthud",
-  "digitaloverlay",
-  "fm",
+	"MenyooExtras",
+	"rampage_tr_main",
+	"rampage_tr_animated",
+	"heisthud",
+	"digitaloverlay",
+	"fm",
 }
 
 local filesReady = {
-  "rampage_tr_main.ytd",
-  "rampage_tr_animated.ytd",
-  "rampage_tr_main.ytd",
-  "rampage_tr_main.ytd",
-  "rampage_tr_main.ytd",
+	"rampage_tr_main.ytd",
+	"rampage_tr_animated.ytd",
+	"rampage_tr_main.ytd",
+	"rampage_tr_main.ytd",
+	"rampage_tr_main.ytd",
 }
 
-Citizen.CreateThread(function()
-  while true do
-    local loaded = ""
-    local detected = false
+--// don't touch this please \\--
+local hasstreamedtexturedictloaded = HasStreamedTextureDictLoaded
+local isstreamingfileready = IsStreamingFileReady
 
-    for k,v in pairs(dictTextures) do
-      if HasStreamedTextureDictLoaded(v) then
-        loaded = v
-        detected = true
-      end
-    end
+CreateThread(function()
+	while true do
+		local msec = 3000
+		local loaded = ""
+		local detected = false
 
-    for k,v in pairs(filesReady) do
-      if IsStreamingFileReady(v) then
-        loaded = v
-        detected = true
-      end
-    end
+		if enable_anti_menyoo then
+			for k,v in pairs(dictTextures) do
+				if hasstreamedtexturedictloaded(v) then
+					loaded = v
+					detected = true
+				end
+			end
+	
+			for k,v in pairs(filesReady) do
+				if isstreamingfileready(v) then
+					loaded = v
+					detected = true
+				end
+			end
+	
+			if detected then
+				--// use your server side trigger for kick player and discord log \\--
+				--// gunakan trigger server side kalian untuk kick player dan log discord \\-- 
+				msec = 1*60000
+			end
+		end
 
-    if detected then
-      -- Trigger ke Drop Player dan bikin log di serverside
-      Wait(1*60000)
-    end 
-    Wait(3000)
-  end
+		Wait(msec)
+	end
 end)
